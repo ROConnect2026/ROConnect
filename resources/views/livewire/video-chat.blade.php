@@ -1,16 +1,13 @@
 <div class="fixed inset-0 bg-black flex flex-col font-sans overflow-hidden" 
     x-data="videoChat($wire, '{{ $userId }}')"
-    @keydown.window.space.prevent="skip()"
+    @keydown.window.esc.prevent="skip()"
 >
-    <!-- Background: Stranger's Video (Full Screen) -->
     <div class="fixed inset-0 z-0 bg-[#020202]">
         <video id="remoteVideo" class="w-full h-full object-cover transition-all duration-1000" autoplay playsinline poster="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1200"></video>
         
-        <!-- Cinematic Vignette Overlay -->
         <div class="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.8)] pointer-events-none"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none"></div>
 
-        <!-- Matching Indicator Overlay -->
         <div x-show="!onCall" class="absolute inset-0 flex items-center justify-center z-10 bg-black/40 backdrop-blur-sm transition-all">
             <div class="flex flex-col items-center gap-6">
                 <div class="relative">
@@ -27,10 +24,14 @@
         </div>
     </div>
 
-    <!-- Top Overlay: Interests & My ID -->
     <div class="relative z-40 p-8 flex justify-between items-start pointer-events-none">
-        <div class="animate-in fade-in slide-in-from-top-4 duration-700">
-            <div class="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-xl border border-white/10 flex items-center gap-3">
+        <div class="flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
+            <a href="/" class="pointer-events-auto w-fit px-4 py-2 rounded-xl bg-black/80 hover:bg-brand/20 backdrop-blur-xl border border-white/10 flex items-center gap-3 transition-all group">
+                <svg class="w-4 h-4 text-white group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
+                <span class="text-[10px] font-black tracking-widest uppercase text-white">Back to Home</span>
+            </a>
+
+            <div class="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-xl border border-white/10 flex items-center gap-3 w-fit">
                 <span class="text-[9px] font-black tracking-widest uppercase text-zinc-400">My System ID</span>
                 <span class="text-[11px] font-black text-white bg-brand/20 px-2 py-0.5 rounded border border-brand/30">{{ $userId }}</span>
             </div>
@@ -43,58 +44,64 @@
         </div>
     </div>
 
-    <!-- Middle: Skip Button (Centered Bottom) -->
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-4">
         <button @click="skip()" class="skip-button group">
             <svg class="text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
         </button>
-        <span class="text-[8px] font-black tracking-[0.4em] uppercase text-zinc-100 drop-shadow-lg">Next Spacebar</span>
+        <span class="text-[8px] font-black tracking-[0.4em] uppercase text-zinc-100 drop-shadow-lg">Next [Esc]</span>
     </div>
 
-    <!-- Bottom Left: Your Camera (PIP) -->
     <div class="absolute bottom-10 left-10 z-40 w-56 aspect-video rounded-2xl overflow-hidden border border-white/30 shadow-2xl animate-in fade-in slide-in-from-left-4 duration-1000">
         <video id="localVideo" class="w-full h-full object-cover" autoplay muted playsinline style="transform: scaleX(-1);"></video>
-        <!-- PIP Overlay Label -->
         <div class="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/80 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/20">
             <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
             <span class="text-[8px] font-black uppercase tracking-widest text-white">You</span>
         </div>
     </div>
 
-    <!-- Bottom Right: Chat Log -->
     <div class="absolute bottom-10 right-10 z-40 w-80 flex flex-col gap-4 pointer-events-none animate-in fade-in slide-in-from-right-4 duration-1000">
-        <div x-ref="chatLog" class="max-h-56 overflow-y-auto no-scrollbar flex flex-col gap-2 pointer-events-auto mask-fade-top">
-            <template x-for="msg in messages">
-                <div :class="msg.sender === 'You' ? 'items-end' : 'items-start'" class="flex flex-col">
-                    <div class="px-5 py-2.5 rounded-2xl text-[12px] font-bold shadow-2xl" 
-                         :class="msg.sender === 'You' ? 'bg-brand text-white shadow-brand/20' : 'bg-black/80 backdrop-blur-3xl border border-white/20 text-white'">
-                         <p x-text="msg.text"></p>
-                    </div>
-                </div>
-            </template>
-            <div x-show="isTyping" class="flex gap-1.5 px-4 py-3 rounded-xl bg-black/80 backdrop-blur-3xl w-fit border border-white/20 shadow-2xl">
-                <div class="typing-dot bg-white"></div><div class="typing-dot bg-white" style="animation-delay: 0.2s"></div><div class="typing-dot bg-white" style="animation-delay: 0.4s"></div>
-            </div>
+    
+    <div x-ref="chatLog" 
+         class="max-h-[65vh] overflow-y-auto no-scrollbar flex flex-col gap-2 pointer-events-auto mask-fade-top transition-all duration-300">
+        
+       <template x-for="msg in messages">
+    <div :class="msg.sender === 'You' ? 'items-end' : 'items-start'" class="flex flex-col max-w-full">
+        <div class="px-5 py-2.5 rounded-2xl text-[12px] font-bold shadow-2xl transition-all w-fit max-w-full" 
+             :class="msg.sender === 'You' ? 'bg-brand text-white shadow-brand/20' : 'bg-black/95 backdrop-blur-3xl border border-white/20 text-white'">
+             
+             <p x-text="msg.text" class="break-words whitespace-pre-wrap"></p>
+             
         </div>
+    </div>
+</template>
 
-        <div class="relative pointer-events-auto group">
-            <input 
-                type="text" 
-                x-model="newMessage"
-                @keydown.enter="sendMessage()"
-                placeholder="Enter message..." 
-                class="w-full bg-black/60 backdrop-blur-3xl border border-white/30 rounded-2xl py-4.5 px-6 focus:outline-none focus:border-brand/80 transition-all text-[12px] pr-14 shadow-2xl placeholder-zinc-300 font-bold tracking-wide text-white"
-            >
-            <button @click="sendMessage()" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5-5 5M6 12h12"></path></svg>
-            </button>
+        <div x-show="isTyping" class="flex gap-1.5 px-4 py-3 rounded-xl bg-black/95 backdrop-blur-3xl w-fit border border-white/20 shadow-2xl">
+            <div class="typing-dot bg-white"></div>
+            <div class="typing-dot bg-white" style="animation-delay: 0.2s"></div>
+            <div class="typing-dot bg-white" style="animation-delay: 0.4s"></div>
         </div>
+    </div>
+
+    <div class="relative pointer-events-auto group">
+        <input 
+            type="text" 
+            x-model="newMessage"
+            @keydown.enter="sendMessage()"
+            placeholder="Enter message..." 
+            class="w-full bg-black/95 backdrop-blur-3xl border border-white/30 rounded-2xl py-4.5 px-6 focus:outline-none focus:border-brand/80 transition-all text-[12px] pr-14 shadow-2xl placeholder-zinc-300 font-bold tracking-wide text-white"
+        >
+        <button @click="sendMessage()" class="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5-5 5M6 12h12"></path></svg>
+        </button>
+    </div>
+</div>
     </div>
 
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .mask-fade-top { mask-image: linear-gradient(to top, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to top, black 80%, transparent 100%); }
     </style>
+</div>
 
     <script>
         document.addEventListener('alpine:init', () => {

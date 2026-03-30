@@ -11,7 +11,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-obsidian: #050505;
+    --color-brand: #0066FF;
+    --color-brand-hover: #0052CC;
+    --color-surface: #121212;
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -39,7 +44,6 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -47,6 +51,94 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+    
+    body {
+        @apply bg-obsidian text-white antialiased;
+    }
+}
+
+@layer components {
+    .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .glass-dark {
+        background: rgba(18, 18, 18, 0.85);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-feed {
+        @apply w-full h-full object-cover;
+    }
+
+    .skip-button {
+        @apply w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 shadow-[0_0_30px_rgba(0,102,255,0.3)] hover:shadow-[0_0_50px_rgba(0,102,255,0.5)];
+        background: linear-gradient(135deg, #0066FF 0%, #0044BB 100%);
+    }
+
+    .skip-button svg {
+        @apply w-6 h-6;
+    }
+
+    .chat-pill {
+        @apply px-5 py-2.5 rounded-2xl text-white text-sm font-semibold shadow-2xl;
+        background: rgba(20, 20, 20, 0.9);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .interest-tag {
+        @apply px-4 py-1.5 rounded-xl border border-white/30 text-white text-[10px] font-black uppercase tracking-[0.15em] bg-white/20 backdrop-blur-md shadow-2xl;
+    }
+
+    .glass-panel {
+        @apply rounded-[2rem] border border-white/15 shadow-2xl;
+        background: rgba(25, 25, 25, 0.6);
+        backdrop-filter: blur(40px);
+        -webkit-backdrop-filter: blur(40px);
+    }
+
+    .pro-input {
+        @apply w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-sm font-bold text-white placeholder-zinc-400 transition-all outline-hidden focus:border-brand/70 focus:bg-white/[0.12];
+    }
+
+    .pro-button {
+        @apply bg-brand hover:bg-brand-hover text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-brand/20 hover:shadow-brand/40 active:scale-95;
+    }
+
+    .grid-bg {
+        background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
+        background-size: 40px 40px;
+    }
+
+    .feature-card {
+        @apply flex flex-col items-center gap-3 p-6 rounded-3xl border border-white/15 bg-white/[0.05] backdrop-blur-3xl transition-all duration-500 hover:bg-white/[0.08] hover:border-white/30 hover:-translate-y-1;
+    }
+
+    .typing-dot {
+        @apply w-1.5 h-1.5 rounded-full bg-brand;
+        animation: pulse-brand 1.5s infinite;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.animate-float {
+    animation: float 10s ease-in-out infinite;
+}
+
+@keyframes pulse-brand {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {
@@ -54,11 +146,11 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply  !mb-0 !leading-tight text-zinc-300;
 }
 
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    @apply outline-hidden ring-2 ring-brand ring-offset-2 ring-offset-obsidian;
 }

@@ -11,6 +11,12 @@
         @livewireStyles
     </head>
     <body class="bg-obsidian text-white flex items-center justify-center min-h-screen antialiased">
+        <a
+            href="{{ route('translator.index') }}"
+            class="fixed right-4 top-4 z-50 inline-flex items-center justify-center rounded-xl bg-teal-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800"
+        >
+            Translation Engine
+        </a>
         <livewire:lobby />
         @livewireScripts
     </body>
